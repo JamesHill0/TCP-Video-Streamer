@@ -1,2 +1,2 @@
-# YTBW
+# TCP VIDEO STREAMER
 Python video sharing program
