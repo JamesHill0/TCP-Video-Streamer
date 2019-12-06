@@ -1,23 +1,24 @@
 import cv2
 import numpy as np
 import copy
+import zlib
 
-# def str_to_dict(str):
-#     freqDict = dict()
-#     for x in str:
-#         if x in freqDict:
-#             freqDict[x] += 1
-#         else: freqDict[x] = 1
-#     return freqDict
+def str_to_dict(str):
+    freqDict = dict()
+    for x in str:
+        if x in freqDict:
+            freqDict[x] += 1
+        else: freqDict[x] = 1
+    return freqDict
 
 def create_full_image_dict(image):
-    # Creating a dictionary with a key for each unique (r,g,b) combination in image
+
     colorDictionary = dict()
     imageTuple = np.shape(image)
     (height, width, color) = imageTuple
     for x in range(height):
         for y in range(width):
-            # print(f"{x} out of {height}")                         This Line can be used as progress bar
+
             if tuple(image[x][y]) not in colorDictionary:
                 colorDictionary[tuple(image[x][y])] = 1
             else:
@@ -67,7 +68,7 @@ def do_single_merge(rec_frequencies):
 def create_tree(dictionary):
     frequencies = tuple_list(dictionary)
     while True:
-        # print(f"length of the tree is {len(frequencies)}")                    Can be used as progress bar
+
         if len(frequencies) == 1:
             break
         else:
@@ -116,7 +117,10 @@ def return_image_tree():
     tree = create_tree(colorDictionary)
     encode_moves(tree[0])
 
-def compress(image):
+def compress(image, scale = 9):
+    if len(image):
+        return zlib.compress(image, scale)
+
     new = np.ndarray(shape=(len(image), len(image[0])))
     for x in range(len(image)):
         for y in range(len(image[0])):
@@ -124,13 +128,13 @@ def compress(image):
             new[x][y] = key[str(tuple(image[x][y]))]
     return new.astype(int)
 
-def decompress(compressedImage, decompressKey):
+def decompress(compressedImage, decompressKey = None):
+
+    if len(compressedImage):    #zlib Compression
+        return zlib.decompress(compressedImage)
     for x in range(len(compressedImage)):
         for y in range(len(compressedImage[0])):
-            # pass
             print(str(compressedImage[x][y]))
-            # print(inverted_key[str(compressedImage[x][y])])
-            # print(str(compressedImage[x][y]))
 
 
 def invert_key(compression_key):
@@ -153,7 +157,6 @@ def invert_key(compression_key):
 # print(inverted_key)
 #
 # decompress(compressedImage, inverted_key)
-
 
 
 
